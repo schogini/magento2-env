@@ -4,7 +4,6 @@ RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 COPY installm2.sh /usr/local/bin/
 
 # Get the libraries needed to setup the environment for Magento2
-# installm2.sh has the Magento2 installation script
 RUN chmod u+x /usr/local/bin/installm2.sh && \ 
     apt update && apt -y install apache2 && \ 
     apt-get update && apt-get install -y \
@@ -25,10 +24,8 @@ RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/r
 RUN apt-get install mysql-server -y && \
     a2enmod rewrite && \
     sed -ie '/Directory \/var\/www/{;N;N;s/None/All/;}' /etc/apache2/apache2.conf 
-    #&& \
-    #service apache2 restart
 
-# Get the magento files, create the database
+# Create the database
 RUN service mysql start && \
     mysql -u root -pmadad123 -e "create database db_madad" && \ 
     apt-get clean
@@ -36,7 +33,7 @@ RUN service mysql start && \
 # Expose the ports for the host to map
 EXPOSE 80 443 3306
 
-# Set our script as the ENTRYPOINT so that Magento2 installation will happen everytime we create a container from this image
-# Its done this way because we need the container IP to use as the source IP
+# RUN ["/bin/bash", "-c", "echo '#!/bin/sh' > /usr/local/bin/installm2-2.sh && echo 'service mysql restart && service apache2 restart && exec \"$@\"' > /usr/local/bin/installm2.sh && chmod u+x /usr/local/bin/installm2.sh"]
+
 ENTRYPOINT ["/usr/local/bin/installm2.sh"]
 CMD ["/bin/bash"]
