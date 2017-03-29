@@ -18,7 +18,7 @@ RUN php -r "copy('https://getcomposer.org/installer', '/var/www/composer-setup.p
     php -r "unlink('/var/www/composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
-# Setup MySQL and create a database
+# Setup MySQL
 RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/root_password password madad123'"] 
 RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password madad123'"]
 RUN apt-get install mysql-server -y && \
@@ -33,7 +33,7 @@ RUN service mysql start && \
 # Expose the ports for the host to map
 EXPOSE 80 443 3306
 
-RUN ["/bin/bash", "-c", "echo '#!/bin/sh' > /usr/local/bin/installm2.sh && echo 'service mysql restart && service apache2 restart && exec \"$@\"' > /usr/local/bin/installm2.sh && chmod u+x /usr/local/bin/installm2.sh"]
+RUN ["/bin/bash", "-c", "echo '#!/bin/sh' > /usr/local/bin/installm2.sh && echo 'service mysql restart && service apache2 restart && exec \"$@\"' >> /usr/local/bin/installm2.sh && chmod u+x /usr/local/bin/installm2.sh"]
 
 ENTRYPOINT ["/usr/local/bin/installm2.sh"]
 CMD ["/bin/bash"]
