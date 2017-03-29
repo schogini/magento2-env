@@ -18,7 +18,7 @@ RUN php -r "copy('https://getcomposer.org/installer', '/var/www/composer-setup.p
     php -r "unlink('/var/www/composer-setup.php');" && \
     mv composer.phar /usr/local/bin/composer
 
-# Setup MySQL
+# Setup MySQL and create a database
 RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/root_password password madad123'"] 
 RUN ["/bin/bash", "-c", "debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password madad123'"]
 RUN apt-get install mysql-server -y && \
