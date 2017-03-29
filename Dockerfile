@@ -1,11 +1,11 @@
 FROM ubuntu:latest
 MAINTAINER Gayatri S Ajith gayatri@schogini.com
 RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
-COPY installm2.sh /usr/local/bin/
+# COPY installm2.sh /usr/local/bin/
 
 # Get the libraries needed to setup the environment for Magento2
-RUN chmod u+x /usr/local/bin/installm2.sh && \ 
-    apt update && apt -y install apache2 && \ 
+# RUN chmod u+x /usr/local/bin/installm2.sh && \ 
+RUN apt update && apt -y install apache2 && \ 
     apt-get update && apt-get install -y \
     nano wget tar git php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php php-mcrypt \
     php-zip php-curl php-soap php-intl php-mcrypt php-bcmath php-gd php-xml \
@@ -33,7 +33,7 @@ RUN service mysql start && \
 # Expose the ports for the host to map
 EXPOSE 80 443 3306
 
-# RUN ["/bin/bash", "-c", "echo '#!/bin/sh' > /usr/local/bin/installm2-2.sh && echo 'service mysql restart && service apache2 restart && exec \"$@\"' > /usr/local/bin/installm2.sh && chmod u+x /usr/local/bin/installm2.sh"]
+RUN ["/bin/bash", "-c", "echo '#!/bin/sh' > /usr/local/bin/installm2.sh && echo 'service mysql restart && service apache2 restart && exec \"$@\"' > /usr/local/bin/installm2.sh && chmod u+x /usr/local/bin/installm2.sh"]
 
 ENTRYPOINT ["/usr/local/bin/installm2.sh"]
 CMD ["/bin/bash"]
